@@ -9,21 +9,32 @@ import {
   Patch,
   Post,
   Query,
+  Session,
 } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { User } from './user.entity';
 import { UserDto } from './dto/user.dto';
+import { AuthService } from './auth.service';
 
 @Controller('auth')
 @Serialize(UserDto)
 export class UsersController {
-  constructor(private usersService: UsersService) {}
+  constructor(
+    private usersService: UsersService,
+    private authService: AuthService,
+  ) {}
 
   @Post('/signup')
-  async create(@Body() body: CreateUserDto): Promise<void> {
-    this.usersService.create(body.email, body.password);
-    return;
+  async create(@Body() body: CreateUserDto): Promise<User> {
+    const { email, password } = body;
+    return this.authService.signup(email, password);
+  }
+
+  @Post('/signin')
+  async signIn(@Body() body: CreateUserDto): Promise<User> {
+    const { email, password } = body;
+    return this.authService.signin(email, password);
   }
 
   @Get('/:id')
