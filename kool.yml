@@ -1,0 +1,8 @@
+scripts:
+  nest: kool exec app nest
+  npm: kool exec app npm
+  npx: kool exec app npx
+  psql: kool exec -e PGPASSWORD=$DB_PASSWORD database psql -U $DB_USERNAME $DB_DATABASE
+  setup:
+  - kool docker kooldev/node:14 npm install
+  - kool start
