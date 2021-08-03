@@ -26,15 +26,25 @@ export class UsersController {
   ) {}
 
   @Post('/signup')
-  async create(@Body() body: CreateUserDto): Promise<User> {
+  async create(
+    @Body() body: CreateUserDto,
+    @Session() session: any,
+  ): Promise<User> {
     const { email, password } = body;
-    return this.authService.signup(email, password);
+    const user = await this.authService.signup(email, password);
+    session.userId = user.id;
+    return user;
   }
 
   @Post('/signin')
-  async signIn(@Body() body: CreateUserDto): Promise<User> {
+  async signIn(
+    @Body() body: CreateUserDto,
+    @Session() session: any,
+  ): Promise<User> {
     const { email, password } = body;
-    return this.authService.signin(email, password);
+    const user = await this.authService.signin(email, password);
+    session.userId = user.id;
+    return user;
   }
 
   @Get('/:id')
