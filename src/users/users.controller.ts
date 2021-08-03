@@ -30,6 +30,12 @@ export class UsersController {
     return this.usersService.findOne(session.userId);
   }
 
+  @Post('/signout')
+  signOut(@Session() session: any): Promise<void> {
+    session.userId = null;
+    return Promise.resolve();
+  }
+
   @Post('/signup')
   async create(
     @Body() body: CreateUserDto,
