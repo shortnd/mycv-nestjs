@@ -5,6 +5,7 @@ import {
   Controller,
   Delete,
   Get,
+  NotFoundException,
   Param,
   Patch,
   Post,
@@ -18,7 +19,7 @@ import { User } from './user.entity';
 import { UserDto } from './dto/user.dto';
 import { AuthService } from './auth.service';
 import { CurrentUser } from './decorators/current-user.decorator';
-import { AuthGuard } from 'src/guards/auth.guard';
+import { AuthGuard } from '../guards/auth.guard';
 
 @Controller('auth')
 @Serialize(UserDto)
@@ -41,7 +42,7 @@ export class UsersController {
   }
 
   @Post('/signup')
-  async create(
+  async createUser(
     @Body() body: CreateUserDto,
     @Session() session: any,
   ): Promise<User> {
@@ -64,7 +65,11 @@ export class UsersController {
 
   @Get('/:id')
   async findUser(@Param('id') id: string): Promise<User> {
-    return this.usersService.findOne(parseInt(id));
+    const user = await this.usersService.findOne(parseInt(id));
+    if (!user) {
+      throw new NotFoundException('User not found');
+    }
+    return user;
   }
 
   @Get()
