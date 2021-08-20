@@ -22,7 +22,7 @@ const cookieSession = require('cookie-session');
       useFactory: (config: ConfigService) => ({
         type: 'sqlite',
         database: config.get<string>('DB_NAME'),
-        synchronize: true,
+        synchronize: config.get<string>('NODE_ENV') !== 'production',
         entities: [User, Report],
       }),
     }),
@@ -41,11 +41,12 @@ const cookieSession = require('cookie-session');
   ],
 })
 export class AppModule {
+  constructor(private configService: ConfigService) {}
   configure(consumer: MiddlewareConsumer) {
     consumer
       .apply(
         cookieSession({
-          keys: ['session'],
+          keys: [this.configService.get('COOKIE_KEY')],
         }),
       )
       .forRoutes('*');
