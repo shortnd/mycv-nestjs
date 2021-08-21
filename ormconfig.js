@@ -1,21 +1,30 @@
+/** @type {import("typeorm").ConnectionOptions} */
 const dbConfig = {
   synchronize: false,
+  migrations: ['migrations/*.js'],
+  cli: {
+    migrationsDir: 'migrations',
+  },
 };
 
 switch (process.env.NODE_ENV) {
   case 'development':
-    Object.assign(dbConfig, {
+    /** @type {import("typeorm").ConnectionOptions} */
+    let devConfig = {
       type: 'sqlite',
       database: 'db.sqlite',
       entities: ['**/*.entity.js'],
-    });
+    };
+    Object.assign(dbConfig, devConfig);
     break;
   case 'test':
-    Object.assign(dbConfig, {
+    /** @type {import("typeorm").ConnectionOptions} */
+    let testConfig = {
       type: 'sqlite',
       database: ':memory:',
       entities: ['**/*.entity.ts'],
-    });
+    };
+    Object.assign(dbConfig, testConfig);
     break;
   case 'production':
     break;
