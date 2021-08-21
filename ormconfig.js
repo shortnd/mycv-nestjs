@@ -23,6 +23,7 @@ switch (process.env.NODE_ENV) {
       type: 'sqlite',
       database: ':memory:',
       entities: ['**/*.entity.ts'],
+      migrationsRun: true,
     };
     Object.assign(dbConfig, testConfig);
     break;
